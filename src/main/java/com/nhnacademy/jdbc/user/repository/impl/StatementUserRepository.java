@@ -17,13 +17,46 @@ public class StatementUserRepository implements UserRepository {
     @Override
     public Optional<User> findByUserIdAndUserPassword(String userId, String userPassword) {
         //todo#1 아이디, 비밀번호가 일치하는 User 조회
+        String sql = String.format("SELECT * FROM jdbc_users WHERE user_id='%s' AND user_password='%s'", userId, userPassword);
+        log.debug("SQL: {}", sql);
 
+        try(Connection connection = DbUtils.getConnection();
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql)) {
+            if (resultSet.next()) {
+                User user = new User(
+                        resultSet.getString("user_id"),
+                        resultSet.getString("user_name"),
+                        resultSet.getString("user_password")
+                );
+                return Optional.of(user);
+            }
+        }catch(SQLException e){
+            throw new RuntimeException(e);
+        }
         return Optional.empty();
     }
 
     @Override
     public Optional<User> findById(String userId) {
         //#todo#2-아이디로 User 조회
+        String sql = String.format("SELECT * FROM jdbc_users WHERE user_id='%s'", userId);
+        log.debug("SQL: {}", sql);
+
+        try(Connection connection = DbUtils.getConnection();
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql)) {
+            if (resultSet.next()) {
+                User user = new User(
+                        resultSet.getString("user_id"),
+                        resultSet.getString("user_name"),
+                        resultSet.getString("user_password")
+                );
+                return Optional.of(user);
+            }
+        }catch(SQLException e){
+            throw new RuntimeException(e);
+        }
 
         return Optional.empty();
     }
@@ -31,19 +64,46 @@ public class StatementUserRepository implements UserRepository {
     @Override
     public int save(User user) {
         //todo#3- User 저장
-        return 0;
+        String sql = String.format("INSERT INTO jdbc_users VALUES('%s','%s','%s')", user.getUserId(), user.getUserName(), user.getUserPassword());
+        log.debug("SQL: {}", sql);
+
+        try(Connection connection = DbUtils.getConnection();
+        Statement statement = connection.createStatement();){
+            int result = statement.executeUpdate(sql);
+            return result;
+        }catch(SQLException e){
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public int updateUserPasswordByUserId(String userId, String userPassword) {
         //todo#4-User 비밀번호 변경
-        return 0;
+        String sql = String.format("UPDATE jdbc_users SET user_password='%s' WHERE user_id='%s'", userPassword, userId);
+        log.debug("SQL: {}", sql);
+
+        try(Connection connection = DbUtils.getConnection();
+            Statement statement = connection.createStatement();){
+            int result = statement.executeUpdate(sql);
+            return result;
+        }catch(SQLException e){
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public int deleteByUserId(String userId) {
         //todo#5 - User 삭제
-        return 0;
+        String sql = String.format("DELETE FROM jdbc_users WHERE user_id='%s'", userId);
+        log.debug("SQL: {}", sql);
+
+        try(Connection connection = DbUtils.getConnection();
+            Statement statement = connection.createStatement();){
+            int result = statement.executeUpdate(sql);
+            return result;
+        }catch(SQLException e){
+            throw new RuntimeException(e);
+        }
     }
 
 }
