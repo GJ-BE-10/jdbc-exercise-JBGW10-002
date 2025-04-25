@@ -4,6 +4,7 @@ import com.nhnacademy.jdbc.bank.domain.Account;
 import com.nhnacademy.jdbc.bank.exception.AccountAreadyExistException;
 import com.nhnacademy.jdbc.bank.exception.AccountNotFoundException;
 import com.nhnacademy.jdbc.bank.exception.BalanceNotEnoughException;
+import com.nhnacademy.jdbc.bank.repository.AccountRepository;
 import com.nhnacademy.jdbc.bank.repository.impl.AccountRepositoryImpl;
 import com.nhnacademy.jdbc.bank.service.impl.BankServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,7 @@ class BankServiceTest {
     //todo#18 BankServiceTest를 실행하고, Test Case가 통과할 수 있도록 BankServiceImpl 서비스를 수정합니다.
 
     @Mock
-    AccountRepositoryImpl accountRepository;
+    AccountRepository accountRepository;
 
     BankService bankService;
 
